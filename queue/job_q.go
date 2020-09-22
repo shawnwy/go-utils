@@ -69,12 +69,12 @@ func (rq *JobQ) AddJob(e interface{}, ddl int64) {
 	rq.jobs <- Element{e, ddl}
 }
 
-func (rq *JobQ) accelerate(ddl int64) {
+func (rq *JobQ) update(ddl int64) {
 	delta := math.Max(1.0, float64(ddl-time.Now().UnixNano()))
 	rq.ddl = ddl
 	rq.Ticker.Stop()
 	rq.Ticker = time.NewTicker(time.Duration(delta))
-	log.Printf("rerunning with %p ... next tick%v", rq.Ticker.C, delta/float64(time.Second))
+	// log.Printf("rerunning with %p ... next tick%v", rq.Ticker.C, delta/float64(time.Second))
 }
 
 func (rq *JobQ) execJobs() {
@@ -82,11 +82,19 @@ func (rq *JobQ) execJobs() {
 		v, _ := rq.Peek()
 		e := v.(*Element)
 		if e.t > time.Now().UnixNano() {
-			return
+			break
 		}
 		rq.Pop()
+		// log.Println("sending a job", e.val)
 		rq.JobChan <- e.val
 	}
+	// update next tick interval
+	ddl := time.Now().Add(24 * time.Hour).UnixNano()
+	if top, ok := rq.Peek(); ok {
+		e := top.(*Element)
+		ddl = e.t
+	}
+	rq.update(ddl)
 }
 
 func (rq *JobQ) run() {
@@ -101,19 +109,16 @@ func (rq *JobQ) run() {
 					currDDL = top.t
 				}
 				rq.Push(&Element{e.val, e.t})
-				fmt.Println(e.t, currDDL)
 				if e.t < currDDL {
-					rq.accelerate(e.t)
+					rq.update(e.t)
 				}
 
-			case t := <-rq.C:
-				fmt.Println("ding @", t)
+			case <-rq.C:
 				rq.execJobs()
-				fmt.Println("sent @", t)
 
 			case <-rq.quit:
 				rq.Stop()
-				fmt.Println("terminating ...")
+				log.Println("JobQ is terminating ...")
 				return
 			}
 		}

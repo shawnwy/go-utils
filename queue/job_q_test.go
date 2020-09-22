@@ -22,13 +22,16 @@ func TestJobQAdd(test *testing.T) {
 			ddl := time.Now().Add(time.Duration(deltaSec) * time.Second).UnixNano()
 
 			log.Printf("[%v] - Add Job<%d, %d>\n", ts, jid, ttl)
-			// q.Retry(ddl, ttl)
 			q.AddJob(ddl, ddl)
+			// jid := time.Now().Add(1).UnixNano()
+			// log.Printf("[%v] - Add Job<%d, %d>\n", ts, jid, 1)
+			// q.Retry(jid, 1)
 
 		case s := <-sec.C:
 			log.Printf("[%v] - Intel<%s>\n", s, q.Intel())
 
 		case job := <-q.JobChan:
+			log.Println("-------------->", job)
 			log.Println("-------------->", time.Unix(0, job.(int64)))
 
 		case <-done:
