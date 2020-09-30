@@ -52,19 +52,21 @@ func NewJobQ() *JobQ {
 	return rq
 }
 
+// Intel - tell the status of current queue, like jobs count, next job tick, etc.
 func (rq *JobQ) Intel() string {
 	rq.RLock()
 	defer rq.RUnlock()
 	return fmt.Sprintf("ddl: %v(%d secs) queue<#%d>", rq.ddl/int64(time.Second), (time.Now().UnixNano()-rq.ddl)/int64(time.Second), rq.Size())
 }
 
-// Retry - Add a Job<e> with ttl(time-to-tile), duration for next execution.
+// Retry - Add a Job<e> with ttl(time-to-live), duration for next execution.
 // ttl is represented as nanoseconds
 func (rq *JobQ) Retry(e interface{}, ttl int64) {
 	ddl := time.Now().Add(time.Duration(ttl)).UnixNano()
 	rq.jobs <- Element{e, ddl}
 }
 
+// AddJob - Add a Job<e> with a ddl(deadline).
 func (rq *JobQ) AddJob(e interface{}, ddl int64) {
 	rq.jobs <- Element{e, ddl}
 }
@@ -74,7 +76,6 @@ func (rq *JobQ) update(ddl int64) {
 	rq.ddl = ddl
 	rq.Ticker.Stop()
 	rq.Ticker = time.NewTicker(time.Duration(delta))
-	// log.Printf("rerunning with %p ... next tick%v", rq.Ticker.C, delta/float64(time.Second))
 }
 
 func (rq *JobQ) execJobs() {
@@ -85,7 +86,6 @@ func (rq *JobQ) execJobs() {
 			break
 		}
 		rq.Pop()
-		// log.Println("sending a job", e.val)
 		rq.JobChan <- e.val
 	}
 	// update next tick interval

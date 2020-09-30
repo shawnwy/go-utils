@@ -1,6 +1,7 @@
 package queue
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"os"
@@ -38,4 +39,67 @@ func TestJobQAdd(test *testing.T) {
 			t.Stop()
 		}
 	}
+}
+
+type Node struct {
+	val  int
+	next *Node
+}
+
+type LinkedList struct {
+	head *Node
+	tail *Node
+	len  int
+}
+
+func NewList() *LinkedList {
+	return &LinkedList{}
+}
+
+func (l *LinkedList) Append(val int) *LinkedList {
+	if l.head == nil {
+		l.head = &Node{val: val}
+		l.tail = l.head
+		l.len = 1
+		return l
+	}
+	l.tail.next = &Node{val: val}
+	l.tail = l.tail.next
+	l.len += 1
+	return l
+}
+
+func (l *LinkedList) Len() int {
+	return l.len
+}
+
+func (l *LinkedList) Reverse() {
+	if l.len <= 1 {
+		return
+	}
+	dummy := &Node{next: l.head}
+	l.tail = l.head
+	for curr := dummy.next; curr.next != nil; {
+		next := curr.next
+		curr.next = next.next
+		next.next = dummy.next
+		dummy.next = next
+	}
+	l.head = dummy.next
+}
+
+func (l *LinkedList) String() {
+	for curr := l.head; curr != nil; curr = curr.next {
+		fmt.Printf("-> %d ", curr.val)
+	}
+	fmt.Println("")
+}
+
+func TestReverse(t *testing.T) {
+	l := NewList()
+	l.String()
+	l.Append(1).Append(2).Append(3).Append(4)
+	l.String()
+	l.Reverse()
+	l.String()
 }
