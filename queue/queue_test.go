@@ -7,15 +7,15 @@ import (
 
 func TestEnque(t *testing.T) {
 	q := New()
-	q.Enqueue(1)
+	q.Enque(1)
 	fmt.Println(q)
 }
 
 func TestDeque(t *testing.T) {
 	q := New()
-	q.Enqueue("a")
-	q.Enqueue(1)
+	q.Enque("a")
+	q.Enque(1)
 	fmt.Println(q)
-	e, _ := q.Dequeue()
+	e, _ := q.Deque()
 	fmt.Println(e)
 }

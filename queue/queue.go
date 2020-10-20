@@ -7,41 +7,41 @@ import (
 	"github.com/emirpasic/gods/lists/arraylist"
 )
 
-type Queue struct {
+type Q struct {
 	list *arraylist.List
 }
 
-func New() *Queue {
-	return &Queue{list: arraylist.New()}
+func New() *Q {
+	return &Q{list: arraylist.New()}
 }
 
-func (q *Queue) Size() int {
+func (q *Q) Size() int {
 	return q.list.Size()
 }
 
-func (q *Queue) Empty() bool {
+func (q *Q) Empty() bool {
 	return q.list.Empty()
 }
 
-func (q *Queue) Clear() {
+func (q *Q) Clear() {
 	q.list.Clear()
 }
 
-func (q *Queue) withinRange(index int) bool {
+func (q *Q) withinRange(index int) bool {
 	return index >= 0 && index < q.list.Size()
 }
 
-func (q *Queue) Enqueue(value interface{}) {
+func (q *Q) Enque(value interface{}) {
 	q.list.Add(value)
 }
 
-func (q *Queue) Dequeue() (value interface{}, ok bool) {
+func (q *Q) Deque() (value interface{}, ok bool) {
 	value, ok = q.list.Get(0)
 	q.list.Remove(0)
 	return
 }
 
-func (q *Queue) Values() []interface{} {
+func (q *Q) Values() []interface{} {
 	size := q.list.Size()
 	elements := make([]interface{}, size, size)
 	for i := 0; i < size; i++ {
@@ -51,8 +51,8 @@ func (q *Queue) Values() []interface{} {
 }
 
 // String returns a string representation of container
-func (q *Queue) String() string {
-	str := "ArrayQueue\n"
+func (q *Q) String() string {
+	str := "ArrayQ\n"
 	values := []string{}
 	for _, value := range q.list.Values() {
 		values = append(values, fmt.Sprintf("%v", value))
