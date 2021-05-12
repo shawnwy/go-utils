@@ -10,6 +10,12 @@ import (
 	"github.com/emirpasic/gods/trees/binaryheap"
 )
 
+// JobQ - It is a thread-safe Job Queue for job execution with ddl(deadline)
+// 		Method:
+// 			- Intel() string
+//				Return a printable message tell the status of current queue, like jobs count, next job tick, etc.
+//			- Retry(e interface{}, ttl int64)
+//			- AddJob(e interface{}, ddl int64)
 type JobQ struct {
 	*binaryheap.Heap
 	*time.Ticker
@@ -20,6 +26,7 @@ type JobQ struct {
 	sync.RWMutex
 }
 
+// Element
 type Element struct {
 	val interface{}
 	t   int64 // execution time in nanoseconds
