@@ -104,8 +104,10 @@ func (h *Heap) Update(e interface{}, idx int) {
 // return (index, value) if the element existed in the heap
 // return (-1, nil) if doesn't existed
 // the complexity is O(n) where h = h.Len()
-func (h *Heap) Find(f func(index int, value interface{}) bool) (int, interface{}) {
-	return h.list.Find(f)
+func (h *Heap) Find(e interface{}) (int, interface{}) {
+	return h.list.Find(func(index int, value interface{}) bool {
+		return h.Validator(value, e)
+	})
 }
 
 func (h *Heap) withinRange(idx int) bool {

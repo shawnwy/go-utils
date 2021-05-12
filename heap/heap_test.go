@@ -33,18 +33,12 @@ func TestHeap(t *testing.T) {
 	h.Push(E{3, 10})
 
 	fmt.Println(h)
-	idx, val := h.Find(func(index int, value interface{}) bool {
-		x := value.(E)
-		return x.ID == 3
-	})
+	idx, val := h.Find(E{3, -1})
 	fmt.Println(idx, val)
 	h.Remove(idx)
 	fmt.Println(h)
 	h.Push(E{4, 10})
-	idx, val = h.Find(func(index int, value interface{}) bool {
-		x := value.(E)
-		return x.ID == 4
-	})
+	idx, val = h.Find(E{4, -1})
 	fmt.Println(h)
 	fmt.Println(idx, val)
 	h.Update(E{4, 0.3}, idx)
