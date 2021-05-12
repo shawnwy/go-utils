@@ -1,4 +1,4 @@
-module queue
+module github.com/shawnwy/go-utils
 
 go 1.13
 
