@@ -151,7 +151,6 @@ func (h *Heap) siftDown() {
 func (h *Heap) siftDownIndex(i0 int) bool {
 	idx := i0
 	size := h.Size()
-	fmt.Println(size)
 	for leftIdx := idx<<1 + 1; leftIdx < size; leftIdx = idx<<1 + 1 {
 		rightIdx := idx<<1 + 2
 		smallerIdx := leftIdx
