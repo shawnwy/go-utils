@@ -46,6 +46,11 @@ func (h *Heap) Size() int {
 	return h.list.Size()
 }
 
+// Empty - return whether heap is empty
+func (h *Heap) Empty() bool {
+	return h.list.Size() == 0
+}
+
 // Push - pushes the element 'e' onto the heap
 // The complexity is O(log n) where n = h.Len()
 func (h *Heap) Push(e interface{}) {
@@ -92,12 +97,16 @@ func (h *Heap) Remove(idx int) {
 
 // Update - update an existed element by index
 // The complexity is O(log n) where n = h.Len().
-func (h *Heap) Update(e interface{}, idx int) {
+func (h *Heap) Update(e interface{}, idx int) bool {
+	if idx < 0 {
+		return false
+	}
 	h.list.Set(idx, e)
 	h.list.Swap(idx, h.list.Size()-1)
 	if !h.siftDownIndex(idx) {
 		h.siftUpIndex(idx)
 	}
+	return true
 }
 
 // Find - find the certain element by cutomized validation function
@@ -142,6 +151,7 @@ func (h *Heap) siftDown() {
 func (h *Heap) siftDownIndex(i0 int) bool {
 	idx := i0
 	size := h.Size()
+	fmt.Println(size)
 	for leftIdx := idx<<1 + 1; leftIdx < size; leftIdx = idx<<1 + 1 {
 		rightIdx := idx<<1 + 2
 		smallerIdx := leftIdx

@@ -43,5 +43,14 @@ func TestHeap(t *testing.T) {
 	fmt.Println(idx, val)
 	h.Update(E{4, 0.3}, idx)
 	fmt.Println(h)
+	// fmt.Println(h.Size())
+	// val, exist := h.Pop()
+	// fmt.Println(h.Size())
+
+	for !h.Empty() {
+		val, _ := h.Pop()
+		fmt.Println(val)
+		fmt.Println(val, h, h.Size())
+	}
 
 }
