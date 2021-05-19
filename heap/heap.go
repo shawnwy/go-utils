@@ -156,7 +156,7 @@ func (h *Heap) siftDownIndex(i0 int) bool {
 		smallerIdx := leftIdx
 		leftVal, _ := h.list.Get(leftIdx)
 		rightVal, _ := h.list.Get(rightIdx)
-		if rightIdx < size && h.Comparator(leftVal, rightVal) < 0 {
+		if rightIdx < size && h.Comparator(leftVal, rightVal) > 0 {
 			smallerIdx = rightIdx
 		}
 		idxVal, _ := h.list.Get(idx)
