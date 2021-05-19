@@ -1,48 +1,61 @@
 package bits
 
-import "github.com/bits-and-blooms/bitset"
+import (
+	"bytes"
+	"fmt"
+
+	"github.com/bits-and-blooms/bitset"
+)
 
 type BitMap struct {
 	m      []*bitset.BitSet
-	width  int
-	length int
+	width  uint
+	height uint
 }
 
-func NewBitMap(width, length int) *BitMap {
-	m := make([]*bitset.BitSet, width)
-	for w := 0; w < width; w++ {
-		m[w] = bitset.New(uint(length))
+func NewBitMap(width, height uint) *BitMap {
+	m := make([]*bitset.BitSet, height)
+	for h := uint(0); h < height; h++ {
+		m[h] = bitset.New(uint(width))
 	}
-	return &BitMap{m, width, length}
+	return &BitMap{m, width, height}
 }
 
 // Set - Set <x, y> bit as 1.
 // 	x must within [0, length)
 //	y must within [0, width)
-func (b *BitMap) Set(x, y int) bool {
+func (b *BitMap) Set(x, y uint) bool {
 	if !b.withInRange(x, y) {
 		return false
 	}
-	b.m[y].Set(uint(x))
+	b.m[y].Set(x)
 	return true
 }
 
 // Test - Check the bit <x, y> whether is 1 .
 // 	x must within [0, length)
 //	y must within [0, width)
-func (b *BitMap) Test(x, y int) bool {
+func (b *BitMap) Test(x, y uint) bool {
 	if !b.withInRange(x, y) {
 		return false
 	}
-	return b.m[y].Test(uint(x))
+	return b.m[y].Test(x)
 }
 
-func (b *BitMap) withInRange(x, y int) bool {
-	if x < 0 || x >= b.length {
+func (b *BitMap) withInRange(x, y uint) bool {
+	if x < 0 || x >= b.width {
 		return false
 	}
-	if y < 0 || y >= b.width {
+	if y < 0 || y >= b.height {
 		return false
 	}
 	return true
+}
+
+func (b *BitMap) DumpAsBits() string {
+	buffer := bytes.NewBufferString("")
+	for _, set := range b.m {
+		fmt.Fprintln(buffer, set.DumpAsBits())
+	}
+	return buffer.String()
 }
