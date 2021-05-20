@@ -25,7 +25,7 @@ func NewBitMap(width, height uint) *BitMap {
 // 	x must within [0, length)
 //	y must within [0, width)
 func (b *BitMap) Set(x, y uint) bool {
-	if !b.withInRange(x, y) {
+	if !b.withinRange(x, y) {
 		return false
 	}
 	b.m[y].Set(x)
@@ -36,13 +36,13 @@ func (b *BitMap) Set(x, y uint) bool {
 // 	x must within [0, length)
 //	y must within [0, width)
 func (b *BitMap) Test(x, y uint) bool {
-	if !b.withInRange(x, y) {
+	if !b.withinRange(x, y) {
 		return false
 	}
 	return b.m[y].Test(x)
 }
 
-func (b *BitMap) withInRange(x, y uint) bool {
+func (b *BitMap) withinRange(x, y uint) bool {
 	if x < 0 || x >= b.width {
 		return false
 	}
