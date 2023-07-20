@@ -1,6 +1,6 @@
 module github.com/shawnwy/go-utils
 
-go 1.13
+go 1.18
 
 require (
 	github.com/bits-and-blooms/bitset v1.2.0
