@@ -1,4 +1,4 @@
-module github.com/shawnwy/go-utils
+module github.com/shawnwy/go-utils/v5
 
 go 1.18
 
