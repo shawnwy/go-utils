@@ -31,13 +31,9 @@ define f_upgrade_version
 	$(1)=v$(majorX).$(minorY).$(patchZ)$(suffixT)
 endef
 
-define f_x
-	$(eval $(1)=$(if $(1),,build))
-	$(info $(1))
-endef
 
-.pony: ver
-ver:
+.pony: publish
+publish:
 	$(eval kind=$(shell read -p "Enter the kind of publish(major/minor/patch/build):" kind; echo $${kind}))
 	$(eval stage=$(shell read -p "Enter the stage of release(alpha/beta/rc/release):" stage; if [ stage == "release" ]; then stage=""; fi; echo $${stage}))
 	$(eval $(call f_upgrade_version,nxt_version,$(kind),$(stage)))
@@ -46,39 +42,3 @@ ver:
 	git tag "$(nxt_version)"
 	git push origin "$(nxt_version)"
 	GOPROXY=proxy.golang.org go list -m github.com/shawnwy/go-utils@$(nxt_version)
-
-
-test:
-	$(eval version_suffix=alpha.1)
-	$(eval s=alpha)
-	$(eval stage=$(word 1,$(subst ., ,$(version_suffix))))
-	$(eval mode=build)
-	$(info "s=$(s) stage=$(stage)")
-	@echo $(strip $(s))
-	@echo $(filter $(s),$(stage))
-	@echo $(filter major minor patch,$(mode))
-	@echo $(if $(and $(strip $(s)),$(filter $(s),$(stage))),$(shell expr "$(buildT)" + 1),1)
-
-
-test2:
-	$(eval confirm=y)
-	$(info $(strip $(confirm)))
-ifneq ($(confirm),y)
-	$(error aborted action)
-else
-	echo "no end"
-endif
-	echo "end"
-
-ver2:
-	$(info $(filter-out major minor patch,))
-	$(if $(filter-out major minor patch,build),true,false)
-
-MODE ?= patch
-.pony: publish
-publish:
-	$(call f_upgrade_version,minor) > VERSION
-	$(eval nxt_version=`cat VERSION`)
-	git tag "$(nxt_version)"
-	git push origin "$(nxt_version)"
-	GOPROXY=proxy.golang.org go list -m github.com/fasionchan/goutils@$version
