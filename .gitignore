@@ -23,3 +23,6 @@ vendor/
 #IDEA
 .idea/*
 .idea/
+
+tmp/*
+.tmp/*

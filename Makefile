@@ -2,13 +2,13 @@
 
 
 # calc for next_version according last_version
-#	$(1) nxt_version - result of upgrade version $(shell git describe --tags --abbrev=0)
+#	$(1) nxt_version - result of upgrade version
 #	$(2) kind 	- major/minor/patch/build
 #	$(3) stage 	- alpha/beta/rc
 define f_upgrade_version
 	$(eval _kind=$(if $(strip $(2)),$(strip $(2)),build))
 
-	$(eval last_version=v5.0.1-alpha.1)
+	$(eval last_version=$(shell git describe --tags --abbrev=0))
 	$(eval version_core=$(word 1,$(subst -, ,$(last_version:v%=%))))
 	$(eval majorX=$(word 1,$(subst ., ,$(version_core))))
 	$(eval minorY=$(word 2,$(subst ., ,$(version_core))))
@@ -37,7 +37,7 @@ publish:
 	$(eval kind=$(shell read -p "Enter the kind of publish(major/minor/patch/build):" kind; echo $${kind}))
 	$(eval stage=$(shell read -p "Enter the stage of release(alpha/beta/rc/release):" stage; if [ stage == "release" ]; then stage=""; fi; echo $${stage}))
 	$(eval $(call f_upgrade_version,nxt_version,$(kind),$(stage)))
-	$(eval confirm=$(shell read -p "Are you sure to publish { $(next_version) } <$(kind)>@<$(stage)> (y or n)?" value; echo $${value}))
+	$(eval confirm=$(shell read -p "Are you sure to publish { $(nxt_version) } <$(kind)>@<$(stage)> (y or n)?" value; echo $${value}))
 	@echo $(nxt_version) > VERSION
 	git tag "$(nxt_version)"
 	git push origin "$(nxt_version)"
