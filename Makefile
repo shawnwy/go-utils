@@ -41,4 +41,4 @@ publish:
 	@echo $(nxt_version) > VERSION
 	git tag "$(nxt_version)"
 	git push origin "$(nxt_version)"
-	GOPROXY=proxy.golang.org go list -m github.com/shawnwy/go-utils@$(nxt_version)
+	go list -m github.com/shawnwy/go-utils@$(nxt_version)
