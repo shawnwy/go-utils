@@ -6,6 +6,7 @@ require (
 	github.com/emirpasic/gods v1.18.1
 	github.com/nacos-group/nacos-sdk-go v1.1.4
 	go.uber.org/zap v1.22.0
+	golang.org/x/sys v0.0.0-20210510120138-977fb7262007
 )
 
 require (
