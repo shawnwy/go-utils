@@ -11,7 +11,7 @@ var (
 )
 
 func TestRandomBytes(t *testing.T) {
-	b := make([]byte, 6)
+	b := make([]byte, 32)
 	RandomBytesLite(b)
 	fmt.Println(string(b), len(b))
 	fmt.Println(hex.EncodeToString(b))
