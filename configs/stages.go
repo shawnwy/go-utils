@@ -18,17 +18,17 @@ const (
 func (s Stage) String() string {
 	switch s {
 	case DEV:
-		return "Stage[DEV]"
+		return "DEV"
 	case SIT:
-		return "Stage[SIT]"
+		return "SIT"
 	case STG:
-		return "Stage[STG]"
+		return "STG"
 	case UAT:
-		return "Stage[UAT]"
+		return "UAT"
 	case PRD:
-		return "Stage[PRD]"
+		return "PRD"
 	default:
-		return "Stage[Unknown]"
+		return "Unknown"
 	}
 }
 
