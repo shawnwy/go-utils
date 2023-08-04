@@ -9,7 +9,7 @@ import (
 
 type RegistryCFG struct {
 	Registry bool   `json:"registry"`
-	RegPort  int    `json:"reg-port"`
+	RegPort  uint64 `json:"reg-port"`
 	RegGroup string `json:"reg-group"`
 }
 
@@ -23,6 +23,6 @@ func (r RegistryCFG) Validate() error {
 
 func DefineRegistryFlags(cfg *RegistryCFG, cmd string) {
 	flag.BoolVar(&cfg.Registry, "reg", false, fmt.Sprintf("registry service <%s> or not", cmd))
-	flag.IntVar(&cfg.RegPort, "reg-port", 59696, fmt.Sprintf("registry service <%s> with customized port", cmd))
+	flag.Uint64Var(&cfg.RegPort, "reg-port", 59696, fmt.Sprintf("registry service <%s> with customized port", cmd))
 	flag.StringVar(&cfg.RegGroup, "reg-group", "", fmt.Sprintf("registry service <%s> with customized group name", cmd))
 }
