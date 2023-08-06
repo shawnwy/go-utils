@@ -35,7 +35,7 @@ func (c *withCode) Unwrap() error { return c.error }
 func (c *withCode) Code() int     { return c.code }
 
 // NewWithCode returns an error with supplied message and a specific code.
-func NewWithCode(message string, code int) error {
+func NewWithCode(code int, message string) error {
 	return &withCode{
 		msg:  message,
 		code: code,
