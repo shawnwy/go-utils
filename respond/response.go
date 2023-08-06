@@ -4,7 +4,6 @@
 package respond
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/shawnwy/go-utils/v5/errors"
 	"net/http"
@@ -87,9 +86,14 @@ func (b *builder) WithData(data interface{}, msg string) {
 	})
 }
 
-func (b *builder) WithError(err error, msg string) {
+func (b *builder) WithError(err error, msgs ...string) {
+	msg := err.Error()
+	for _, m := range msgs {
+		msg += "; "
+		msg += m
+	}
 	b.c.JSON(b.statusCode, Response{
 		Code: errors.GetCode(err),
-		Msg:  fmt.Sprintf("%s: %s", err.Error(), msg),
+		Msg:  msg,
 	})
 }
