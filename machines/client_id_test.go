@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/hex"
 	"fmt"
+	"os"
 	"testing"
 )
 
@@ -37,4 +38,9 @@ func TestCopy2RetVal(t *testing.T) {
 func copy2retVal() (x [20]byte) {
 	copy(x[:], cid[:])
 	return
+}
+
+func TestGetHostname(t *testing.T) {
+	hostname, err := os.Hostname()
+	fmt.Println(hostname, err)
 }

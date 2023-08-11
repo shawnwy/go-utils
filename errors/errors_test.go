@@ -2,15 +2,14 @@ package errors
 
 import (
 	"errors"
+	perrors "errors"
 	"fmt"
 	"testing"
-
-	perrors "errors"
 )
 
 func TestGetCode(t *testing.T) {
 	code := 10101
-	err := NewWithCode("test code", code)
+	err := NewWithCode(code, "test code")
 	werr := Wrap(err, "sss")
 	if code != GetCode(werr) {
 		t.Log("Failed to get code")
@@ -19,8 +18,8 @@ func TestGetCode(t *testing.T) {
 }
 
 func TestWrapErrorIs(t *testing.T) {
-	var errFalse = NewWithCode("False", 404)
-	var errOrigin = NewWithCode("Origin", 200)
+	var errFalse = NewWithCode(404, "False")
+	var errOrigin = NewWithCode(200, "Origin")
 	err := Wrap(errOrigin, "Wrap Test")
 	if !errors.Is(err, errOrigin) {
 		t.Log("Failed to errors.Is")
@@ -35,13 +34,13 @@ func TestWrapErrorIs(t *testing.T) {
 
 func TestWrapErrorAs(t *testing.T) {
 	var errFalse = errors.New("sdfsdf")
-	var errOrigin = NewWithCode("Origin", 200)
+	var errOrigin = NewWithCode(200, "Origin")
 	err := Wrap(errOrigin, "Wrap Test")
 	// if !errors.As(err, &errOrigin) {
 	// 	t.Log("Failed to errors.As")
 	// 	t.Fail()
 	// }
-	// errOrigin = NewWithCode("Origin", 200)
+	// errOrigin = NewWithCode(200,"Origin")
 	if errors.As(err, &errFalse) {
 		t.Log("False Match @ errors.As")
 		t.Fail()
@@ -59,9 +58,9 @@ func TestWrapddd(t *testing.T) {
 }
 
 func TestWithError(t *testing.T) {
-	var errFalse = NewWithCode("False", 404)
-	var errOrigin = NewWithCode("test", 200)
-	var errTest2 = NewWithCode("test2", 201)
+	var errFalse = NewWithCode(404, "False")
+	var errOrigin = NewWithCode(200, "test")
+	var errTest2 = NewWithCode(201, "test2")
 	err := With(errOrigin, errTest2)
 	if !perrors.As(err, &errOrigin) {
 		t.Log("Failed to errors.As")

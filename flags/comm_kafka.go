@@ -8,27 +8,27 @@ import (
 	"time"
 )
 
-type KafkaCFG struct {
+type KafkaCommCFG struct {
 	Brokers    string `json:"brokers"`
 	Topic      string `json:"topic"`
 	Group      string `json:"group"`
 	Partitions int    `json:"partitions"`
 }
 
-func (k KafkaCFG) Validate() error {
+func (k KafkaCommCFG) Validate() error {
 	if k.Brokers == "" {
-		return errors.New("'brokers' has been missing in KafkaCFG")
+		return errors.New("'brokers' has been missing in KafkaCommCFG")
 	}
 	if k.Topic == "" {
-		return errors.New("'topic' has been missing in KafkaCFG")
+		return errors.New("'topic' has been missing in KafkaCommCFG")
 	}
 	if k.Partitions <= 0 {
-		return errors.New("'partitions' has been missing in KafkaCFG")
+		return errors.New("'partitions' has been missing in KafkaCommCFG")
 	}
 	return nil
 }
 
-func DefineKafkaFlags(cfg *KafkaCFG, cmd, tag string) {
+func DefineKafkaFlags(cfg *KafkaCommCFG, cmd, tag string) {
 	tag += "-"
 	flag.StringVar(&cfg.Brokers,
 		fmt.Sprintf("%sbrokers", tag),
