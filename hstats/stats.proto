@@ -12,6 +12,7 @@ message HostStats{
   NetStats net = 8;
   MemStats mem = 9;
   DiskStats disk = 10;
+  int64 ts = 11;
 }
 
 message CpuStats{

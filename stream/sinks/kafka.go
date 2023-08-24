@@ -80,30 +80,28 @@ func (k *KafkaSink) Subscribe(ingress <-chan stream.IMessage) {
 	k.wg.Add(1)
 	defer k.wg.Done()
 
-	go func() {
-		for {
-			select {
-			case m, ok := <-ingress:
-				if !ok {
-					return
-				}
-
-				if err := k.p.Produce(&kafka.Message{
-					TopicPartition: kafka.TopicPartition{
-						Topic:     &k.topic,
-						Partition: kafka.PartitionAny,
-					},
-					Value: m.Bytes(),
-					Key:   m.UID(),
-				}, nil); err != nil {
-					zap.L().Info("failed to sink a msg from kafka", zap.Error(err))
-				}
-			case <-k.stop:
-				zap.L().Info("kafka sink has been stopped")
+	for {
+		select {
+		case m, ok := <-ingress:
+			if !ok {
 				return
 			}
+
+			if err := k.p.Produce(&kafka.Message{
+				TopicPartition: kafka.TopicPartition{
+					Topic:     &k.topic,
+					Partition: kafka.PartitionAny,
+				},
+				Value: m.Bytes(),
+				Key:   m.UID(),
+			}, nil); err != nil {
+				zap.L().Info("failed to sink a msg from kafka", zap.Error(err))
+			}
+		case <-k.stop:
+			zap.L().Info("kafka sink has been stopped")
+			return
 		}
-	}()
+	}
 }
 
 func (k *KafkaSink) Wait() {
@@ -119,6 +117,9 @@ func (k *KafkaSink) Close() {
 }
 
 func (k *KafkaSink) HandleError(cb func(err interface{})) {
+	if cb == nil {
+		cb = defaultErrCB
+	}
 	for event := range k.p.Events() {
 		switch event.(type) {
 		case kafka.Error:

@@ -8,3 +8,5 @@ type Sink interface {
 	Wait()
 	Close()
 }
+
+var defaultErrCB = func(interface{}) {}

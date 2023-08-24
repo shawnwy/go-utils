@@ -79,6 +79,9 @@ func (s *SyslogSink) Close() {
 }
 
 func (s *SyslogSink) HandleError(cb func(err interface{})) {
+	if cb == nil {
+		cb = defaultErrCB
+	}
 	for range s.errCh {
 		cb(nil)
 	}
