@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"os"
 	"testing"
+
+	"github.com/nacos-group/nacos-sdk-go/inner/uuid"
 )
 
 var cid = ClientID()
@@ -43,4 +45,6 @@ func copy2retVal() (x [20]byte) {
 func TestGetHostname(t *testing.T) {
 	hostname, err := os.Hostname()
 	fmt.Println(hostname, err)
+	v4, _ := uuid.NewV4()
+	fmt.Println(v4.Bytes(), len(v4.Bytes()))
 }

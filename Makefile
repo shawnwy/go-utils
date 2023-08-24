@@ -26,18 +26,27 @@ define f_upgrade_version
 	$(eval majorX=$(if $(filter major,$(2)),$(shell expr "$(majorX)" + 1),$(majorX)))
 	$(eval minorY=$(if $(filter minor,$(2)),$(shell expr "$(minorY)" + 1),$(minorY)))
 	$(eval patchZ=$(if $(filter patch,$(2)),$(shell expr "$(patchZ)" + 1),$(patchZ)))
+	$(eval patchZ=$(if $(filter major minor,$(2)),0,$(patchZ)))
 	$(eval suffixT=$(if $(filter alpha beta rc,$(3)),-$(3).$(buildT),))
 
 	$(1)=v$(majorX).$(minorY).$(patchZ)$(suffixT)
 endef
 
+# semantic versioning
+#	$(1) nxt_version - result of upgrade version
+define f_cmd_versioning
+	$(eval kind=$(shell read -p "Enter the kind of publish(major/minor/patch/build):" kind; echo $${kind}))
+    $(eval stage=$(shell read -p "Enter the stage of release(alpha/beta/rc/release):" stage; if [ stage == "release" ]; then stage=""; fi; echo $${stage}))
+    $(call f_upgrade_version,$(1),$(kind),$(stage))
+endef
 
 .pony: publish
 publish:
-	$(eval kind=$(shell read -p "Enter the kind of publish(major/minor/patch/build):" kind; echo $${kind}))
-	$(eval stage=$(shell read -p "Enter the stage of release(alpha/beta/rc/release):" stage; if [ stage == "release" ]; then stage=""; fi; echo $${stage}))
-	$(eval $(call f_upgrade_version,nxt_version,$(kind),$(stage)))
+	$(eval $(call f_cmd_versioning,nxt_version))
 	$(eval confirm=$(shell read -p "Are you sure to publish { $(nxt_version) } <$(kind)>@<$(stage)> (y or n)?" value; echo $${value}))
+ifeq "y" "${confirm}"
+	exit 1
+endif
 	@echo $(nxt_version) > VERSION
 	git tag "$(nxt_version)"
 	git push origin "$(nxt_version)"

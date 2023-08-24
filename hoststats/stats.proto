@@ -1,0 +1,43 @@
+syntax = "proto3";
+package hoststats;
+
+message HostStats{
+  string node_id = 1;
+  string hostname = 2;
+  string ip = 3;
+  string os = 4;
+  uint32 physical_cores = 5;
+  uint32 logical_cores = 6;
+  CpuStats cpu = 7;
+  NetStats net = 8;
+  MemStats mem = 9;
+}
+
+message CpuStats{
+  float user_times = 1;
+  float system_times = 2;
+  float idle_times = 3;
+}
+
+message NetStats{
+  uint64 rx_pkt = 1;
+  uint64 tx_pkt = 2;
+  uint64 rx_bytes = 3;
+  uint64 tx_bytes = 4;
+}
+
+message MemStats{
+  uint64 total = 1;
+  uint64 used = 2;
+  uint64 available = 3;
+}
+
+message DiskStats{
+  uint64 read_cnt = 1;
+  uint64 write_cnt = 2;
+  uint64 read_bytes = 3;
+  uint64 write_bytes = 4;
+  uint64 iops = 5;
+}
+
+option go_package = "github.com/shawnwy/go-utils/hoststats";
