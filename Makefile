@@ -49,8 +49,8 @@ ifeq "y" "${confirm}"
 endif
 	@echo $(nxt_version) > VERSION
 	git add .
-	git commit --amend --no-edit --date=now
-
+	git commit --amend -am "versioning as $(nxt_version)" --date=now
+	git push origin master
 	git tag "$(nxt_version)"
 	git push origin "$(nxt_version)"
 	go list -m github.com/shawnwy/go-utils@$(nxt_version)

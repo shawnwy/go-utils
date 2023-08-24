@@ -22,7 +22,7 @@ func (n NacosCFG) Validate() error {
 	return nil
 }
 
-func DefineNacosFlags(cfg *NacosCFG, cmd string) {
+func DefineNacosFlags(cfg *NacosCFG, _ string) {
 	flag.StringVar(&cfg.NacosURI, "nacos-uri", "", "Set Nacos as Remote Config Center. URI is needed")
 	flag.StringVar(&cfg.NacosUsr, "nacos-usr", "", "Set Nacos as Remote Config Center. username")
 	flag.StringVar(&cfg.NacosPwd, "nacos-pwd", "", "Set Nacos as Remote Config Center. password")
