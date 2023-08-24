@@ -40,4 +40,4 @@ message DiskStats{
   uint64 iops = 5;
 }
 
-option go_package = "github.com/shawnwy/go-utils/hoststats";
+option go_package = "github.com/shawnwy/go-utils/hstats";

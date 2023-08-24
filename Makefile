@@ -48,6 +48,9 @@ ifeq "y" "${confirm}"
 	exit 1
 endif
 	@echo $(nxt_version) > VERSION
+	git add .
+	git commit --amend --no-edit --date=now
+
 	git tag "$(nxt_version)"
 	git push origin "$(nxt_version)"
 	go list -m github.com/shawnwy/go-utils@$(nxt_version)
