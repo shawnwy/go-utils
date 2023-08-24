@@ -1,11 +1,14 @@
 package sinks
 
 import (
-	"github.com/shawnwy/go-utils/v5/errors"
-	"go.uber.org/zap"
 	"log/syslog"
 	"strings"
 	"sync"
+
+	"go.uber.org/zap"
+
+	"github.com/shawnwy/go-utils/v5/errors"
+	"github.com/shawnwy/go-utils/v5/stream"
 )
 
 type SyslogSink struct {
@@ -31,7 +34,7 @@ func NewSyslogSink(proto, url, tag string) (Sink, error) {
 	}, nil
 }
 
-func (s *SyslogSink) Subscribe(ingress <-chan []byte) {
+func (s *SyslogSink) Subscribe(ingress <-chan stream.IMessage) {
 	s.wg.Add(1)
 	defer s.wg.Done()
 	for {
@@ -41,8 +44,8 @@ func (s *SyslogSink) Subscribe(ingress <-chan []byte) {
 				zap.L().Info("syslog sink.exit: ingress channel has been closed")
 				return
 			}
-
-			if n, err := s.wr.Write(m); err != nil || n < len(m) {
+			bytes := m.Bytes()
+			if n, err := s.wr.Write(bytes); err != nil || n < len(bytes) {
 				if err != nil {
 					zap.L().Warn("failed to sink a msg from syslog", zap.Error(err))
 					s.errCh <- struct{}{}

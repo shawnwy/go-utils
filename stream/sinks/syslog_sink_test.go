@@ -7,6 +7,7 @@ import (
 
 	"github.com/shawnwy/go-utils/v5/gen"
 	"github.com/shawnwy/go-utils/v5/sizes"
+	"github.com/shawnwy/go-utils/v5/stream"
 )
 
 var (
@@ -37,10 +38,10 @@ func TestSyslogSink_Sink(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	ingress := make(chan []byte, 100)
+	ingress := make(chan stream.IMessage, 100)
 	sink.Subscribe(ingress)
 	for i := 0; i < 10; i++ {
-		ingress <- []byte("test" + fmt.Sprint(i))
+		ingress <- stream.RawMessage([]byte("test" + fmt.Sprint(i)))
 	}
 }
 

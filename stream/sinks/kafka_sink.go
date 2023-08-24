@@ -6,8 +6,10 @@ import (
 	"sync"
 
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
-	"github.com/shawnwy/go-utils/v5/errors"
 	"go.uber.org/zap"
+
+	"github.com/shawnwy/go-utils/v5/errors"
+	"github.com/shawnwy/go-utils/v5/stream"
 )
 
 type KafkaSink struct {
@@ -74,7 +76,7 @@ func NewKafkaSink(brokers, topic string, opts ...KafkaOption) (Sink, error) {
 	return s, nil
 }
 
-func (k *KafkaSink) Subscribe(ingress <-chan []byte) {
+func (k *KafkaSink) Subscribe(ingress <-chan stream.IMessage) {
 	k.wg.Add(1)
 	defer k.wg.Done()
 
@@ -91,7 +93,8 @@ func (k *KafkaSink) Subscribe(ingress <-chan []byte) {
 						Topic:     &k.topic,
 						Partition: kafka.PartitionAny,
 					},
-					Value: m,
+					Value: m.Bytes(),
+					Key:   m.UID(),
 				}, nil); err != nil {
 					zap.L().Info("failed to sink a msg from kafka", zap.Error(err))
 				}

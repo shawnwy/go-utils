@@ -2,6 +2,7 @@ package sinks
 
 import (
 	"github.com/shawnwy/go-utils/v5/errors"
+	"github.com/shawnwy/go-utils/v5/stream"
 )
 
 type FanoutSink struct {
@@ -38,7 +39,7 @@ func NewFanoutSinkWithSyslog(proto, url, tag string, workers int) (Sink, error) 
 	return &FanoutSink{sinks}, nil
 }
 
-func (s *FanoutSink) Subscribe(ingress <-chan []byte) {
+func (s *FanoutSink) Subscribe(ingress <-chan stream.IMessage) {
 	for _, sk := range s.sinks {
 		go sk.Subscribe(ingress)
 	}
