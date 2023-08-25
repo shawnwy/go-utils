@@ -29,7 +29,9 @@ func (n NATsCommCFG) Validate() error {
 }
 
 func DefineNATsFlags(cfg *NATsCommCFG, cmd, tag string) {
-	tag += "-"
+	if tag != "" {
+		tag += "-"
+	}
 	flag.StringVar(&cfg.Server,
 		fmt.Sprintf("%sserver", tag),
 		"nats://localhost:4222",

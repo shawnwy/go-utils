@@ -29,7 +29,9 @@ func (k KafkaCommCFG) Validate() error {
 }
 
 func DefineKafkaFlags(cfg *KafkaCommCFG, cmd, tag string) {
-	tag += "-"
+	if tag != "" {
+		tag += "-"
+	}
 	flag.StringVar(&cfg.Brokers,
 		fmt.Sprintf("%sbrokers", tag),
 		"localhost:9092",
