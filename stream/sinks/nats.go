@@ -36,9 +36,9 @@ func NewNATsSink(server, subject string, opts ...nats.Option) (_ Sink, err error
 			zap.L().Info("nats connection has been established", zap.Uint64("retries#", c.Reconnects))
 		}),
 		nats.Name("nats-sink"),
-		nats.ErrorHandler(func(nc *nats.Conn, sub *nats.Subscription, err error) {
-			s.errCh <- err
-		}),
+		// nats.ErrorHandler(func(nc *nats.Conn, sub *nats.Subscription, err error) {
+		// 	s.errCh <- err
+		// }),
 	}, opts...)
 	s.pubConn, err = nats.Connect(server, opts...)
 	if err != nil {

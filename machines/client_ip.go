@@ -28,6 +28,7 @@ func GetLocalIP() (net.IP, error) {
 				return ipnet.IP, nil
 			}
 		}
+
 	}
 	return GetOutboundIP()
 }
