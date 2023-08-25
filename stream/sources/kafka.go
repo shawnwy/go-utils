@@ -85,9 +85,6 @@ func NewKafkaSource(brokers, topic, group string, opts ...KafkaOption) (RawSourc
 }
 
 func (k *KafkaSource) RawBytes() chan stream.IMessage {
-	if k.rawChan == nil {
-		k.rawChan = make(chan stream.IMessage, rawSrcChanSize)
-	}
 	return k.rawChan
 }
 

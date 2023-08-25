@@ -14,7 +14,7 @@ import (
 type NATsSink struct {
 	subject string
 	pubConn *nats.Conn
-	errCh   chan error
+	// errCh   chan error
 
 	stop chan struct{}
 	once sync.Once
@@ -24,7 +24,7 @@ type NATsSink struct {
 func NewNATsSink(server, subject string, opts ...nats.Option) (_ Sink, err error) {
 	s := &NATsSink{
 		subject: subject,
-		errCh:   make(chan error, 10),
+		// errCh:   make(chan error, 10),
 
 		stop: make(chan struct{}),
 	}
@@ -35,10 +35,7 @@ func NewNATsSink(server, subject string, opts ...nats.Option) (_ Sink, err error
 		nats.ReconnectHandler(func(c *nats.Conn) {
 			zap.L().Info("nats connection has been established", zap.Uint64("retries#", c.Reconnects))
 		}),
-		nats.Name("nats-sink"),
-		// nats.ErrorHandler(func(nc *nats.Conn, sub *nats.Subscription, err error) {
-		// 	s.errCh <- err
-		// }),
+		nats.Name(fmt.Sprintf("sink.%s", subject)),
 	}, opts...)
 	s.pubConn, err = nats.Connect(server, opts...)
 	if err != nil {
@@ -68,12 +65,9 @@ func (s *NATsSink) Subscribe(ingress <-chan stream.IMessage) {
 }
 
 func (s *NATsSink) HandleError(cb func(err interface{})) {
-	if cb == nil {
-		cb = defaultErrCB
-	}
-	for e := range s.errCh {
-		cb(e)
-	}
+	s.pubConn.SetErrorHandler(func(nc *nats.Conn, sub *nats.Subscription, err error) {
+		cb(err)
+	})
 }
 
 func (s *NATsSink) Wait() {
