@@ -16,6 +16,7 @@ type NATsSource struct {
 	rawChan chan stream.IMessage
 	subConn *nats.Conn
 	sub     *nats.Subscription
+	opts    []nats.Option
 
 	stop chan struct{}
 	once sync.Once
@@ -30,20 +31,31 @@ func WithRawChanNATs(rawChan chan stream.IMessage) NATsOption {
 	}
 }
 
-func NewNATsSource(server, subject, queue string, opts ...nats.Option) (_ RawSource, err error) {
+func WithNATsOption(opts ...nats.Option) NATsOption {
+	return func(s *NATsSource) {
+		s.opts = append(s.opts, opts...)
+	}
+}
+
+func NewNATsSource(server, subject, queue string, opts ...NATsOption) (_ RawSource, err error) {
 	s := &NATsSource{
 		stop: make(chan struct{}),
+		opts: []nats.Option{
+			nats.Name(fmt.Sprintf("src.%s", subject)),
+			nats.MaxReconnects(-1),
+			nats.RetryOnFailedConnect(true),
+			nats.ReconnectJitter(time.Second, time.Second),
+			nats.ReconnectHandler(func(c *nats.Conn) {
+				zap.L().Info("nats connection has been established", zap.Uint64("retries#", c.Reconnects))
+			}),
+		},
 	}
-	opts = append([]nats.Option{
-		nats.MaxReconnects(-1),
-		nats.RetryOnFailedConnect(true),
-		nats.ReconnectJitter(time.Second, time.Second),
-		nats.ReconnectHandler(func(c *nats.Conn) {
-			zap.L().Info("nats connection has been established", zap.Uint64("retries#", c.Reconnects))
-		}),
-		nats.Name(fmt.Sprintf("src.%s", subject)),
-	}, opts...)
-	s.subConn, err = nats.Connect(server, opts...)
+
+	for _, o := range opts {
+		o(s)
+	}
+
+	s.subConn, err = nats.Connect(server, s.opts...)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to make a NATs connection")
 	}
