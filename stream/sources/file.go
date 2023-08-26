@@ -156,7 +156,6 @@ func (s *FileSource) watch(ctx context.Context) {
 				queueCh <- q
 			}
 			wg.Wait() // wait for all workers processed all queues
-			time.Sleep(time.Second * 30)
 		}
 	}
 }
@@ -266,16 +265,16 @@ type LogProcessor interface {
 
 // DefaultProcessor - is a default LogProcessor read out contents directly from file to rawChan channel
 type DefaultProcessor struct {
-	r      *bufio.Reader
-	egress chan stream.IMessage
+	r       *bufio.Reader
+	rawChan chan stream.IMessage
 }
 
 // defaultProcessFactory - will generate a factory create default processor
 func defaultProcessorFactory() ProcessorFactory {
-	return func(egress chan stream.IMessage) LogProcessor {
+	return func(rawChan chan stream.IMessage) LogProcessor {
 		return &DefaultProcessor{
-			r:      bufio.NewReader(nil),
-			egress: egress,
+			r:       bufio.NewReader(nil),
+			rawChan: rawChan,
 		}
 	}
 }
@@ -285,7 +284,7 @@ func (d *DefaultProcessor) Process(file *os.File) {
 	sc := bufio.NewScanner(d.r)
 	sc.Split(rotatelogs.SplitAt(rotatelogs.NewLine))
 	for sc.Scan() {
-		d.egress <- stream.RawMessage(sc.Bytes())
+		d.rawChan <- stream.RawMessage(sc.Bytes())
 	}
 	if err := sc.Err(); err != nil {
 		zap.L().Warn("failed to scan a file", zap.Error(err))
