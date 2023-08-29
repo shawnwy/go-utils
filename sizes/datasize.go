@@ -36,6 +36,20 @@ func (s size) String() string {
 	}
 }
 
+func (s size) AsInt() int {
+	if s > GB {
+		panic(fmt.Sprintf("cannot covert to int. %s will overflow", s.String()))
+	}
+	return int(s)
+}
+
+func (s size) AsInt32() int32 {
+	if s > GB {
+		panic(fmt.Sprintf("cannot covert to int32. %s will overflow", s.String()))
+	}
+	return int32(s)
+}
+
 func (s size) AsInt64() int64 {
 	return int64(s)
 }

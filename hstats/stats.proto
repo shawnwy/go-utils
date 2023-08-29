@@ -7,8 +7,8 @@ message HostStats{
   string ip = 3;
   string os = 4;
 
-  CpuStats cpu = 7;
-  NetStats net = 8;
+  repeated NetStats net = 7;
+  CpuStats cpu = 8;
   MemStats mem = 9;
   DiskStats disk = 10;
   int64 ts = 11;
