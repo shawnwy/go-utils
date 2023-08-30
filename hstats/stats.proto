@@ -25,6 +25,7 @@ message NetStats{
   uint64 tx_pkt = 2;
   uint64 rx_bytes = 3;
   uint64 tx_bytes = 4;
+  uint64 speed = 5;
 }
 
 message MemStats{
