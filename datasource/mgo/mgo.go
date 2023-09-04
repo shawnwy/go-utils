@@ -42,6 +42,12 @@ func WithSocketTimeout(d time.Duration) Option {
 	}
 }
 
+func WithMaxConnIdleTime(d time.Duration) Option {
+	return func(opt *options.ClientOptions) {
+		opt.SetMaxConnIdleTime(d)
+	}
+}
+
 func Connect(uri, dbname string, opts ...Option) *mongo.Database {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
